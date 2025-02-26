@@ -1,0 +1,20 @@
+{
+  "admins": [
+    {
+      "email": "admin@example.com",
+      "secret": "JBSWY3DPEHPK3PXQ",
+      "verified": true,
+      "createdAt": "2023-11-01T10:00:00.000Z",
+      "lastLogin": "2024-02-25T13:35:50.372Z",
+      "role": "admin"
+    },
+    {
+      "email": "superadmin@example.com",
+      "secret": "KRSXG5CTMVRXEZLV",
+      "verified": true,
+      "createdAt": "2023-11-05T15:00:00.000Z",
+      "lastLogin": "2024-02-25T19:00:00.000Z",
+      "role": "superadmin"
+    }
+  ]
+}

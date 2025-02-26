@@ -1,0 +1,9 @@
+/* User-specific styles */
+.user-dashboard {
+    background-color: white;
+}
+
+.user-profile {
+    padding: 20px;
+    background-color: #f8f9fa;
+} 

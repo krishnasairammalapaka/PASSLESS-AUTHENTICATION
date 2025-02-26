@@ -1,0 +1,10 @@
+/* Admin-specific styles */
+.admin-dashboard {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.admin-controls {
+    padding: 20px;
+    background-color: #2d2d2d;
+} 

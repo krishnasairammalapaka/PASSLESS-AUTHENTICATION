@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup TOTP</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <style>
+        .setup-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+        }
+
+        .qr-code img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .instructions {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>Setup 2FA</h1>
+        <div class="instructions">
+            <p>1. Open Microsoft Authenticator app</p>
+            <p>2. Tap + icon and select "Work or school account"</p>
+            <p>3. Scan the QR code below</p>
+            <p>4. Enter the code shown in your app to verify</p>
+        </div>
+        <div class="qr-code" id="qrcode">
+            <img id="qrImage" src="" alt="Loading QR Code..." style="display: none;">
+            <div id="loading">Loading QR Code...</div>
+        </div>
+        <div id="setupForm">
+            <input type="text" id="verificationCode" placeholder="Enter verification code" required>
+            <button onclick="verifySetup()">Verify</button>
+            <div id="error" class="error"></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadQRCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+            const loadingDiv = document.getElementById('loading');
+            const qrImage = document.getElementById('qrImage');
+            
+            try {
+                const response = await fetch(`/auth/generate-totp?username=${encodeURIComponent(username)}`);
+                const data = await response.json();
+                
+                if (data.success && data.qrCodeUrl) {
+                    qrImage.src = data.qrCodeUrl;
+                    qrImage.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                } else {
+                    loadingDiv.textContent = data.message || 'Error generating QR code';
+                    showError(data.message || 'Error generating QR code');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loadingDiv.textContent = 'Error loading QR code';
+                showError('Error generating QR code');
+            }
+        }
+
+        async function verifySetup() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+            const code = document.getElementById('verificationCode').value;
+            
+            if (!code || code.length < 6) {
+                showError('Please enter a valid 6-digit verification code');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/auth/verify-setup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, code })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('TOTP setup successful!');
+                    if (data.role === 'admin' || data.role === 'superadmin') {
+                        window.location.href = '/admin/dashboard';
+                    } else {
+                        window.location.href = '/user/dashboard';
+                    }
+                } else {
+                    showError(data.message || 'Invalid verification code. Please make sure you enter the correct code from your authenticator app.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error verifying setup. Please try again.');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Load QR code when page loads
+        loadQRCode();
+    </script>
+</body>
+</html> 

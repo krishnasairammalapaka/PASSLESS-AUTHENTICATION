@@ -1,0 +1,60 @@
+{
+    "users": [
+      {
+        "email": "krishna@gmail.com",
+        "secret": "JBSWY3DPEHPK3PXP",
+        "verified": true,
+        "createdAt": "2023-12-01T09:00:00.000Z",
+        "lastLogin": "2024-02-25T10:30:00.000Z",
+        "role": "user"
+      },
+      {
+        "email": "user2@example.com",
+        "secret": "KRSXG5CTMVRXEZLU",
+        "verified": true,
+        "createdAt": "2023-12-15T14:00:00.000Z",
+        "lastLogin": "2024-02-24T16:45:00.000Z",
+        "role": "user"
+      },
+      {
+        "email": "john.doe@example.com",
+        "secret": "KRSXG5CTMVRXEZL1",
+        "verified": true,
+        "createdAt": "2024-01-15T08:30:00.000Z",
+        "lastLogin": "2024-02-26T09:15:00.000Z",
+        "role": "user"
+      },
+      {
+        "email": "sarah.smith@example.com",
+        "secret": "JBSWY3DPEHPK3PX2",
+        "verified": true,
+        "createdAt": "2024-01-20T11:00:00.000Z",
+        "lastLogin": "2024-02-26T14:20:00.000Z",
+        "role": "user"
+      },
+      {
+        "email": "mike.wilson@example.com",
+        "secret": "KRSXG5CTMVRXEZL3",
+        "verified": false,
+        "createdAt": "2024-02-01T13:45:00.000Z",
+        "lastLogin": "2024-02-26T13:00:00.000Z",
+        "role": "user"
+      },
+      {
+        "email": "emma.brown@example.com",
+        "secret": "JBSWY3DPEHPK3PX4",
+        "verified": false,
+        "createdAt": "2024-02-10T09:20:00.000Z",
+        "lastLogin": "2024-02-26T11:30:00.000Z",
+        "role": "user"
+      },
+      {
+        "email": "alex.johnson@example.com",
+        "secret": "KRSXG5CTMVRXEZL5",
+        "verified": false,
+        "createdAt": "2024-02-15T15:10:00.000Z",
+        "lastLogin": "2024-02-26T15:45:00.000Z",
+        "role": "user"
+      }
+    ]
+  }

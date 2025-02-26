@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify TOTP</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <style>
+        :root {
+            --primary-color: #7289da;
+            --background-dark: #1a1a1a;
+            --card-background: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --error-color: #ff4444;
+        }
+
+        body {
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+
+        .verify-container {
+            width: 100%;
+            max-width: 420px;
+            margin: 20px;
+            padding: 40px;
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .verify-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            margin: 20px 0;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 18px;
+            color: var(--text-primary);
+            text-align: center;
+            letter-spacing: 4px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: rgba(255, 255, 255, 0.07);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+            letter-spacing: normal;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background-color: #5b73c7;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: var(--error-color);
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: rgba(255, 68, 68, 0.1);
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Animation for form elements */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .verify-container > * {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        input {
+            animation: fadeIn 0.6s ease forwards;
+            animation-delay: 0.2s;
+        }
+
+        button {
+            animation: fadeIn 0.6s ease forwards;
+            animation-delay: 0.4s;
+        }
+
+        /* Code input animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        input:focus {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .verify-container {
+                margin: 15px;
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            input {
+                font-size: 16px;
+                letter-spacing: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <h1>Security Verification</h1>
+        <p>Enter the 6-digit code from your authenticator app</p>
+        <input 
+            type="text" 
+            id="verificationCode" 
+            placeholder="Enter code" 
+            maxlength="6" 
+            autocomplete="off"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            required
+        >
+        <button onclick="verifyCode()">Verify Code</button>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        // Format verification code input to numbers only
+        document.getElementById('verificationCode').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        async function verifyCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+            const code = document.getElementById('verificationCode').value;
+            
+            if (!code || code.length < 6) {
+                showError('Please enter a valid 6-digit code');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/auth/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, code })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    if (data.role === 'admin' || data.role === 'superadmin') {
+                        window.location.href = '/admin/dashboard';
+                    } else {
+                        window.location.href = '/user/dashboard';
+                    }
+                } else {
+                    showError(data.message || 'Invalid verification code');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error verifying code');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Shake animation for error
+            errorDiv.style.animation = 'none';
+            errorDiv.offsetHeight; // Trigger reflow
+            errorDiv.style.animation = 'fadeIn 0.3s ease';
+        }
+
+        // Handle Enter key
+        document.getElementById('verificationCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCode();
+            }
+        });
+    </script>
+</body>
+</html> 
