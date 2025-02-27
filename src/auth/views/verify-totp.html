@@ -171,64 +171,174 @@
                 letter-spacing: 3px;
             }
         }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .code-input-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-hint {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .countdown {
+            margin-top: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        input:focus {
+            animation: none !important;
+        }
+
+        button:disabled {
+            background-color: #4a5a8a;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success message animation */
+        @keyframes fadeInSuccess {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error {
+            animation: fadeInSuccess 0.3s ease;
+        }
     </style>
 </head>
 <body>
     <div class="verify-container">
         <h1>Security Verification</h1>
         <p>Enter the 6-digit code from your authenticator app</p>
-        <input 
-            type="text" 
-            id="verificationCode" 
-            placeholder="Enter code" 
-            maxlength="6" 
-            autocomplete="off"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            required
-        >
-        <button onclick="verifyCode()">Verify Code</button>
+        <div class="code-input-container">
+            <input 
+                type="text" 
+                id="verificationCode" 
+                placeholder="000000" 
+                maxlength="6" 
+                autocomplete="off"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                required
+            >
+            <div class="code-hint">Enter 6-digit code</div>
+        </div>
+        <button onclick="verifyCode()" id="verifyButton">Verify Code</button>
         <div id="error" class="error"></div>
+        <div id="countdown" class="countdown">Code expires in: <span>30s</span></div>
     </div>
 
     <script>
-        // Format verification code input to numbers only
-        document.getElementById('verificationCode').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
+        let countdownInterval;
+        const verificationCode = document.getElementById('verificationCode');
+        const verifyButton = document.getElementById('verifyButton');
+        const countdownElement = document.getElementById('countdown');
+        
+        // Start countdown timer
+        function startCountdown() {
+            let timeLeft = 30;
+            countdownElement.querySelector('span').textContent = timeLeft + 's';
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdownElement.querySelector('span').textContent = timeLeft + 's';
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    timeLeft = 30;
+                    countdownElement.querySelector('span').textContent = 'Code expired. Please refresh.';
+                }
+            }, 1000);
+        }
+
+        // Format verification code input
+        verificationCode.addEventListener('input', function(e) {
+            // Remove non-numeric characters
+            let value = this.value.replace(/[^0-9]/g, '');
+            
+            // Update input value
+            this.value = value;
+
+            // Enable/disable button based on code length
+            verifyButton.disabled = value.length !== 6;
+
+            // Hide error when typing
+            document.getElementById('error').style.display = 'none';
         });
 
         async function verifyCode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const username = urlParams.get('username');
-            const code = document.getElementById('verificationCode').value;
+            const code = verificationCode.value;
+            const errorDiv = document.getElementById('error');
             
-            if (!code || code.length < 6) {
+            // Basic validation
+            if (!code || code.length !== 6 || !/^\d+$/.test(code)) {
                 showError('Please enter a valid 6-digit code');
                 return;
             }
             
             try {
+                verifyButton.disabled = true;
+                verifyButton.textContent = 'Verifying...';
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get('username');
+
                 const response = await fetch('/auth/verify', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username, code })
+                    body: JSON.stringify({ 
+                        username, 
+                        code,
+                        timestamp: Date.now() // Send timestamp for time-based validation
+                    })
                 });
                 
                 const data = await response.json();
+                
                 if (data.success) {
-                    if (data.role === 'admin' || data.role === 'superadmin') {
-                        window.location.href = '/admin/dashboard';
-                    } else {
-                        window.location.href = '/user/dashboard';
-                    }
+                    // Show success message
+                    clearInterval(countdownInterval);
+                    showSuccess('Verification successful! Redirecting...');
+                    
+                    // Redirect after success
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 1500);
                 } else {
                     showError(data.message || 'Invalid verification code');
+                    verificationCode.value = ''; // Clear invalid code
+                    verificationCode.focus();
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showError('Error verifying code');
+                showError('Verification failed. Please try again.');
+            } finally {
+                verifyButton.disabled = false;
+                verifyButton.textContent = 'Verify Code';
             }
         }
 
@@ -236,18 +346,30 @@
             const errorDiv = document.getElementById('error');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
-            
-            // Shake animation for error
-            errorDiv.style.animation = 'none';
-            errorDiv.offsetHeight; // Trigger reflow
-            errorDiv.style.animation = 'fadeIn 0.3s ease';
+            errorDiv.className = 'error'; // Reset class
+            void errorDiv.offsetWidth; // Trigger reflow
+            errorDiv.className = 'error shake'; // Add shake animation
+        }
+
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+            errorDiv.style.color = '#4CAF50';
         }
 
         // Handle Enter key
-        document.getElementById('verificationCode').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+        verificationCode.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !verifyButton.disabled) {
                 verifyCode();
             }
+        });
+
+        // Focus input on page load
+        window.addEventListener('load', function() {
+            verificationCode.focus();
+            startCountdown();
         });
     </script>
 </body>

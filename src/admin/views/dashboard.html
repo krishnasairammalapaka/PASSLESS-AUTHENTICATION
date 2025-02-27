@@ -271,7 +271,253 @@
             from { transform: translateX(0); opacity: 1; }
             to { transform: translateX(100%); opacity: 0; }
         }
+
+        .chat-section {
+            margin-top: 2rem;
+        }
+
+        .chat-interface {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 1rem;
+            height: 600px;
+            background-color: var(--card-background);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-users {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-users-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-users-header h3 {
+            margin: 0 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .chat-users-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .chat-user-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-user-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-user-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .chat-main {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .chat-input-container {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .chat-input {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            padding: 0.8rem;
+            border-radius: 6px;
+            resize: none;
+        }
+
+        .user-status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .user-status-indicator.online {
+            background-color: var(--success-color);
+        }
+
+        .user-status-indicator.offline {
+            background-color: var(--danger-color);
+        }
+
+        /* Add responsive styles */
+        @media (max-width: 768px) {
+            .chat-interface {
+                grid-template-columns: 1fr;
+                height: 80vh;
+            }
+
+            .chat-users {
+                display: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+            }
+
+            .chat-users.active {
+                display: flex;
+            }
+
+            .mobile-toggle-users {
+                display: block;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .selected-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .last-seen {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .chat-message {
+            max-width: 70%;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message-sent {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-received {
+            background-color: var(--card-background);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-header {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .message-timestamp {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .no-messages {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .modal-content {
+            position: relative;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--text-secondary);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
     </style>
+    
 </head>
 <body>
     <div class="dashboard-container">
@@ -319,40 +565,101 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="admin-card chat-section">
+            <h2>User Support Chat</h2>
+            <div class="chat-interface">
+                <div class="chat-users">
+                    <div class="chat-users-header">
+                        <h3>Users</h3>
+                        <input type="text" 
+                            class="search-bar" 
+                            placeholder="Search users..." 
+                            onkeyup="filterChatUsers()"
+                        >
+                    </div>
+                    <div class="chat-users-list" id="chatUsersList">
+                        <!-- Users will be populated here -->
+                    </div>
+                </div>
+                <div class="chat-main">
+                    <div class="chat-header" id="chatHeader">
+                        Select a user to start chatting
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages will be populated here -->
+                    </div>
+                    <div class="chat-input-container">
+                        <textarea 
+                            id="messageInput" 
+                            class="chat-input" 
+                            placeholder="Type your message here..." 
+                            rows="2"
+                            disabled
+                        ></textarea>
+                        <button class="btn btn-primary send-button" onclick="sendMessage()" disabled>Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Add User Modal -->
     <div class="modal" id="addUserModal">
         <div class="modal-content">
             <h2>Add New User</h2>
-            <input type="email" class="search-bar" id="newUserEmail" placeholder="Enter user email">
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="addUser()">Add User</button>
-                <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
-            </div>
+            <form id="addUserForm" onsubmit="addUser(event)">
+                <div class="form-group">
+                    <label for="newUserEmail">Email Address</label>
+                    <input 
+                        type="email" 
+                        class="search-bar" 
+                        id="newUserEmail" 
+                        placeholder="Enter user email"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="newUserRole">Role</label>
+                    <select class="search-bar" id="newUserRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
+    <!-- Add this button for mobile view -->
+    <button class="btn mobile-toggle-users" onclick="toggleUsersList()">Show Users</button>
+
     <script>
         let users = [];
+        let currentChatUser = null;
+        let activeUsers = new Map();
+        let secureWS = null;
 
         // Fetch and display users
         async function fetchUsers() {
             try {
-                // Updated fetch path to use API endpoint
-                const response = await fetch('/api/admin/users');
+                const response = await retryFetch('/api/admin/users');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                // Combine users from both users.json and admins.json
-                users = [...data.users, ...data.admins];
-
-                // Update dashboard with user data
-                updateDashboard();
-                displayUsers();
+                if (data.success) {
+                    users = [...data.users, ...data.admins];
+                    updateDashboard();
+                    displayUsers();
+                } else {
+                    throw new Error(data.error || 'Failed to load users');
+                }
             } catch (error) {
                 console.error('Error fetching users:', error);
                 showError('Failed to load users. Please try again later.');
@@ -536,34 +843,437 @@
             document.getElementById('addUserModal').style.display = 'none';
         }
 
-        async function addUser() {
+        // WebSocket setup with encryption
+        class SecureWebSocket {
+            constructor(url) {
+                this.url = url;
+                this.handlers = new Map();
+                this.connect();
+            }
+
+            connect() {
+                try {
+                    this.socket = new WebSocket(this.url);
+                    
+                    this.socket.onopen = () => {
+                        console.log('WebSocket connection established');
+                        this.emit('open');
+                    };
+
+                    this.socket.onmessage = (event) => {
+                        try {
+                            const message = JSON.parse(event.data);
+                            this.handleMessage(message);
+                        } catch (error) {
+                            console.error('Error processing message:', error);
+                            this.emit('error', error);
+                        }
+                    };
+
+                    this.socket.onerror = (error) => {
+                        console.error('WebSocket error:', error);
+                        this.emit('error', error);
+                    };
+
+                    this.socket.onclose = () => {
+                        console.log('WebSocket connection closed');
+                        this.emit('close');
+                    };
+                } catch (error) {
+                    console.error('WebSocket connection error:', error);
+                    this.emit('error', error);
+                }
+            }
+
+            handleMessage(message) {
+                try {
+                    if (message && message.type) {
+                        this.emit(message.type, message.data);
+                    } else {
+                        console.warn('Received message without type:', message);
+                        this.emit('message', message);
+                    }
+                } catch (error) {
+                    console.error('Error in handleMessage:', error);
+                    this.emit('error', error);
+                }
+            }
+
+            send(type, data) {
+                if (this.socket.readyState === WebSocket.OPEN) {
+                    const message = {
+                        type,
+                        data,
+                        timestamp: new Date().toISOString()
+                    };
+                    try {
+                        this.socket.send(JSON.stringify(message));
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                        this.emit('error', error);
+                    }
+                } else {
+                    console.error('WebSocket is not open');
+                    this.emit('error', new Error('WebSocket is not open'));
+                }
+            }
+
+            on(event, callback) {
+                if (!this.handlers.has(event)) {
+                    this.handlers.set(event, []);
+                }
+                this.handlers.get(event).push(callback);
+            }
+
+            emit(event, data) {
+                const handlers = this.handlers.get(event);
+                if (handlers) {
+                    handlers.forEach(handler => handler(data));
+                }
+            }
+
+            close() {
+                if (this.socket) {
+                    this.socket.close();
+                }
+            }
+        }
+
+        // Update the WebSocket initialization
+        const initializeWebSocket = () => {
+            try {
+                const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/admin`;
+                secureWS = new SecureWebSocket(wsUrl);
+                window.secureWS = secureWS;
+
+                secureWS.on('open', () => {
+                    // Authenticate as admin
+                    secureWS.send('auth', {
+                        userId: 'admin',
+                        email: 'admin@example.com',
+                        role: 'admin'
+                    });
+                    showNotification('Connected to chat server', 'success');
+                });
+
+                secureWS.on('message', handleWebSocketMessage);
+                
+                secureWS.on('error', (error) => {
+                    console.error('WebSocket error:', error);
+                    showNotification('Connection error', 'error');
+                });
+
+                secureWS.on('close', () => {
+                    showNotification('Connection lost. Reconnecting...', 'info');
+                    setTimeout(initializeWebSocket, 5000);
+                });
+
+            } catch (error) {
+                console.error('Failed to initialize WebSocket:', error);
+                showNotification('Connection failed', 'error');
+                setTimeout(initializeWebSocket, 5000);
+            }
+        };
+
+        // Function to initialize chat users list
+        function initializeChatUsers() {
+            if (!users || users.length === 0) {
+                fetchUsers().then(() => {
+                    updateChatUsersList();
+                });
+            } else {
+                updateChatUsersList();
+            }
+        }
+
+        // Update the chat users list display
+        function updateChatUsersList() {
+            const usersList = document.getElementById('chatUsersList');
+            usersList.innerHTML = '';
+
+            if (!users || users.length === 0) {
+                usersList.innerHTML = '<div class="no-users">No users available</div>';
+                return;
+            }
+
+            users.forEach(user => {
+                if (user.role !== 'admin') { // Only show non-admin users
+                    const userDiv = document.createElement('div');
+                    userDiv.className = `chat-user-item ${currentChatUser === user.email ? 'active' : ''}`;
+                    userDiv.onclick = () => selectChatUser(user.email);
+                    
+                    const isOnline = activeUsers.has(user.email);
+                    const lastLoginDate = new Date(user.lastLogin);
+                    const timeAgo = getTimeAgo(lastLoginDate);
+                    
+                    userDiv.innerHTML = `
+                        <div class="user-info">
+                            <div class="user-header">
+                                <span class="user-status-indicator ${isOnline ? 'online' : 'offline'}"></span>
+                                <span class="user-email">${user.email}</span>
+                            </div>
+                            <div class="user-details">
+                                <span class="user-status">${isOnline ? 'Online' : 'Offline'}</span>
+                                <span class="last-seen">Last seen: ${timeAgo}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    usersList.appendChild(userDiv);
+                }
+            });
+        }
+
+        // Function to select a user to chat with
+        function selectChatUser(userEmail) {
+            currentChatUser = userEmail;
+            const user = users.find(u => u.email === userEmail);
+            
+            if (!user) {
+                console.error('User not found:', userEmail);
+                return;
+            }
+
+            // Update UI
+            document.getElementById('chatHeader').innerHTML = `
+                <div class="selected-user-info">
+                    <span class="user-status-indicator ${activeUsers.has(userEmail) ? 'online' : 'offline'}"></span>
+                    <span class="user-email">${user.email}</span>
+                </div>
+            `;
+            
+            // Enable chat input
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.querySelector('.send-button');
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            messageInput.focus();
+            
+            // Update selected user in list
+            updateChatUsersList();
+            
+            // Request chat history
+            if (secureWS && secureWS.socket.readyState === WebSocket.OPEN) {
+                secureWS.send('getChatHistory', {
+                    userId: userEmail
+                });
+                
+                // Clear current messages while waiting for history
+                document.getElementById('chatMessages').innerHTML = 
+                    '<div class="loading-messages">Loading messages...</div>';
+            }
+        }
+
+        function filterChatUsers() {
+            const searchTerm = document.querySelector('.chat-users-header input').value.toLowerCase();
+            const userItems = document.querySelectorAll('.chat-user-item');
+            
+            userItems.forEach(item => {
+                const email = item.querySelector('.user-email').textContent.toLowerCase();
+                item.style.display = email.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        function sendMessage() {
+            if (!currentChatUser) {
+                showNotification('Please select a user to chat with', 'error');
+                return;
+            }
+
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            
+            if (!content) return;
+
+            try {
+                if (secureWS && secureWS.socket.readyState === WebSocket.OPEN) {
+                    const messageData = {
+                        content: content,
+                        recipientId: currentChatUser,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    // Send message
+                    secureWS.send('chat', messageData);
+
+                    // Add message to chat window immediately
+                    addMessage({
+                        content: content,
+                        senderType: 'admin',
+                        timestamp: messageData.timestamp,
+                        senderId: 'admin'
+                    }, false);
+
+                    // Clear input
+                    messageInput.value = '';
+                    messageInput.focus();
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showNotification('Failed to send message', 'error');
+            }
+        }
+
+        function handleWebSocketMessage(data) {
+            try {
+                switch (data.type) {
+                    case 'chat':
+                        // Handle incoming chat message
+                        const messageData = data.data;
+                        const isFromCurrentUser = messageData.senderEmail === currentChatUser || 
+                                               messageData.senderId === currentChatUser;
+                        
+                        if (isFromCurrentUser) {
+                            addMessage(messageData, true);
+                        }
+                        break;
+
+                    case 'chatHistory':
+                        // Display chat history
+                        if (data.data.userId === currentChatUser) {
+                            displayChatHistory(data.data.history);
+                        }
+                        break;
+
+                    case 'activeUsers':
+                        updateActiveUserStatus(data.data);
+                        break;
+                }
+            } catch (error) {
+                console.error('Error handling message:', error);
+            }
+        }
+
+        function addMessage(message, isFromUser) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isFromUser ? 'message-received' : 'message-sent'}`;
+            
+            const time = new Date(message.timestamp).toLocaleTimeString();
+            const sender = isFromUser ? (message.senderEmail || 'User') : 'You';
+
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span class="message-sender">${sender}</span>
+                </div>
+                <div class="message-content">${message.content}</div>
+                <div class="message-timestamp">${time}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function displayChatHistory(history) {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+
+            if (!history || history.length === 0) {
+                messagesContainer.innerHTML = '<div class="no-messages">No messages yet</div>';
+                return;
+            }
+
+            history.forEach(msg => {
+                const isFromUser = msg.senderType === 'user';
+                addMessage(msg, isFromUser);
+            });
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Update the initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeChat();
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 8px;
+                color: white;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                background-color: ${type === 'success' ? 'var(--success-color)' : 
+                                  type === 'error' ? 'var(--danger-color)' : 
+                                  'var(--primary-color)'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        async function addUser(event) {
+            event.preventDefault();
+            
             const email = document.getElementById('newUserEmail').value;
+            const role = document.getElementById('newUserRole').value;
+            const addButton = document.querySelector('#addUserForm button[type="submit"]');
+            
             if (!email) {
                 showError('Please enter an email address');
                 return;
             }
 
             try {
-                // Create new user object
-                const newUser = {
-                    email: email,
-                    secret: generateTOTPSecret(), // You'll need to implement this
-                    verified: false,
-                    createdAt: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    role: 'user'
-                };
+                // Disable form and show loading state
+                addButton.disabled = true;
+                addButton.innerHTML = '<span class="loading-spinner"></span> Adding...';
 
-                // Add to users array
-                users.push(newUser);
-                
-                // Update display
-                await fetchUsers();
-                closeModal();
-                showSuccess('User added successfully');
+                const response = await fetch('/api/admin/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        role,
+                        verified: false,
+                        createdAt: new Date().toISOString(),
+                        lastLogin: new Date().toISOString()
+                    })
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`Error adding user: ${text}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.user) {
+                    // Add the new user to the users array
+                    users.push(data.user);
+                    
+                    // Update UI
+                    updateDashboard();
+                    displayUsers();
+                    
+                    // Show success message and close modal
+                    showSuccess('User added successfully');
+                    closeModal();
+                    
+                    // Clear form
+                    document.getElementById('addUserForm').reset();
+                } else {
+                    throw new Error(data.message || 'Failed to add user');
+                }
             } catch (error) {
                 console.error('Error adding user:', error);
-                showError('Failed to add user');
+                showError(error.message || 'Failed to add user');
+            } finally {
+                // Reset button state
+                addButton.disabled = false;
+                addButton.textContent = 'Add User';
             }
         }
 
@@ -690,6 +1400,46 @@
                 console.error('Error updating user:', error);
                 showError('Failed to update user');
             }
+        }
+
+        // Add this function to update active user status
+        function updateActiveUserStatus(users) {
+            activeUsers.clear();
+            users.forEach(user => {
+                activeUsers.set(user.userId, {
+                    email: user.email,
+                    lastMessage: new Date().toISOString(),
+                    messages: [],
+                    online: user.online
+                });
+            });
+            updateChatUsersList();
+        }
+
+        function toggleUsersList() {
+            const usersList = document.querySelector('.chat-users');
+            usersList.classList.toggle('active');
+        }
+
+        // Add these functions to handle chat functionality
+        function initializeChat() {
+            // Initialize WebSocket
+            initializeWebSocket();
+            
+            // Initialize users list
+            initializeChatUsers();
+            
+            // Add message input handlers
+            const messageInput = document.getElementById('messageInput');
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Add click handler for send button
+            document.querySelector('.send-button').addEventListener('click', sendMessage);
         }
     </script>
 </body>
